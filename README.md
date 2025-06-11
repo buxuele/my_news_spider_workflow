@@ -4,7 +4,7 @@ https://github.com/buxuele/my_news_spider_workflow
 
 
 ### 目的
-GitHub Actions  +  爬虫自动化（爬取 澎湃新闻， 保存为 csv）
+GitHub Actions  +  爬虫自动化, 爬取 澎湃新闻， 保存为 csv
 
 
 #### 我的要求：
@@ -17,13 +17,5 @@ GitHub Actions  +  爬虫自动化（爬取 澎湃新闻， 保存为 csv）
 - 先安装依赖： pip install -r requirements.txt, 第一次运行时，安装依赖。其他时候，直接运行。
 - Workflow 中运行 Python 爬虫脚本， 代码文件名字是： 项目根目录/news_spider/peng_pai_02.py
   即 python  项目根目录/news_spider/peng_pai_02.py
-
-
-
-
-
-
-
-
 
 
