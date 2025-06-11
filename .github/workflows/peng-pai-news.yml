@@ -1,0 +1,42 @@
+# 工作流名称，在 GitHub Actions 界面显示
+name: 爬虫自动化
+
+# 触发条件：每2分钟运行一次
+# 注意：免费版 GitHub Actions 可能限制最短为5分钟，调试时若失败可改成 '*/5 * * * *'
+on:
+  schedule:
+    - cron: '*/2 * * * *'  # 每2分钟触发
+
+# 定义任务
+jobs:
+  run-crawler:
+    # 使用最新的 Ubuntu 环境
+    runs-on: ubuntu-latest
+
+    # 执行步骤
+    steps:
+      # 步骤1：拉取仓库代码
+      - name: 拉取代码
+        uses: actions/checkout@v4
+
+      # 步骤2：设置 Python 环境
+      - name: 配置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'  # Python 版本，建议用 3.9，可根据需要调整
+
+      # 步骤3：安装依赖（如果有 requirements.txt）
+      # 仅当文件存在时安装，避免重复安装
+      - name: 安装依赖
+        run: |
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+
+      # 步骤4：打印当前时间，方便调试
+      - name: 打印运行时间
+        run: echo "now is >>> $(date)"
+
+      # 步骤5：运行爬虫脚本
+      - name: 运行爬虫
+        run: python3 news_spider/peng_pai_02.py
