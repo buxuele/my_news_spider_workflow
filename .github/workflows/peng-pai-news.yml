@@ -6,6 +6,8 @@ name: 爬虫自动化
 on:
   schedule:
     - cron: '*/5 * * * *'  # 每2分钟触发
+  workflow_dispatch:        # 👈 手动触发按钮，推荐加上， 测试方便
+
 
 # 定义任务
 jobs:
