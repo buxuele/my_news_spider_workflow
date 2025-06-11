@@ -8,32 +8,34 @@ from datetime import datetime, timedelta
 headers = {
     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36',
-    'Content-Type': 'application/json',  # 响应头要求 Content-Type
-    'Referer': 'https://www.thepaper.cn/',  # 引荐来源，遵循 strict-origin-when-cross-origin
-    'Origin': 'https://www.thepaper.cn'  # 跨域请求需要 Origin
+    'Content-Type': 'application/json',
+    'Referer': 'https://www.thepaper.cn/',
+    'Origin': 'https://www.thepaper.cn'
 }
 
-def get_thepaper_data(file_name='peng_pai_400.csv', max_pages=100, channel_id='-8'):
+def get_thepaper_data(max_pages=100, channel_id='-8'):
     """
-    爬取澎湃新闻数据，保存到 CSV 文件
+    爬取澎湃新闻数据，保存到以日期时间命名的 CSV 文件
     参数：
-        file_name: 输出 CSV 文件名
         max_pages: 最大爬取页数
         channel_id: 新闻频道 ID
     """
-    # 检查文件是否存在
-    has_file = os.path.exists(file_name)
+    # 创建 csv_data 目录
+    os.makedirs('csv_data', exist_ok=True)
+
+    # 生成文件名，格式如 peng_pai_news_20250611_213300.csv
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    file_name = f'csv_data/peng_pai_news_{timestamp}.csv'
 
     # 打开 CSV 文件，追加模式
     with open(file_name, 'a', newline='', encoding='utf-8') as file:
         columns = ['title', 'url', 'time', 'source']
         writer = csv.DictWriter(file, fieldnames=columns)
-        if not has_file:
-            writer.writeheader()
+        writer.writeheader()  # 每次都写入表头，因为是新文件
 
         # 计算 startTime（当前时间戳）
         current_time = int(time.time() * 1000)  # 当前毫秒时间戳
-        start_time = current_time  # 使用此时此刻的时间
+        start_time = current_time
 
         # 爬取数据
         for page in range(1, max_pages + 1):
@@ -41,7 +43,7 @@ def get_thepaper_data(file_name='peng_pai_400.csv', max_pages=100, channel_id='-
 
             payload = {
                 'channelId': channel_id,
-                'excludeContIds': [],  # 留空，需根据实际需求调整
+                'excludeContIds': [],
                 'province': '',
                 'pageSize': 20,
                 'startTime': start_time,
@@ -55,28 +57,23 @@ def get_thepaper_data(file_name='peng_pai_400.csv', max_pages=100, channel_id='-
                 break
 
             ret = resp.json()
-            # print(f"页面 {page} 响应：{ret}")
-
             news_list = ret['data']['list']
             for item in news_list:
-                # print(item)
                 news = {}
                 news['title'] = item.get('name', '')
                 news['url'] = f"https://www.thepaper.cn/newsDetail_forward_{item.get('originalContId', '')}"
                 news['time'] = item.get('pubTimeLong', '')
                 news['source'] = item.get('authorInfo', {}).get('sname', '澎湃新闻')
 
-                # 转换时间格式（如果 API 返回时间戳）
+                # 转换时间格式
                 news['time'] = datetime.fromtimestamp(news['time'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
 
-                # 直接写入，不去重
+                # 写入 CSV
                 writer.writerow(news)
                 print(news)
 
-            start_time = ret["data"]['startTime']  # 更新 startTime
+            start_time = ret["data"]['startTime']
             print()
 
-
 if __name__ == "__main__":
-    get_thepaper_data(file_name='peng_pai_news.csv', max_pages=3, channel_id='-8')
-
+    get_thepaper_data(max_pages=3, channel_id='-8')
