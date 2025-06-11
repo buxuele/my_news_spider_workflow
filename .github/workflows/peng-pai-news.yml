@@ -1,13 +1,11 @@
 # 工作流名称，在 GitHub Actions 界面显示
 name: 爬虫自动化
 
-# 触发条件：每2分钟运行一次
-# 注意：免费版 GitHub Actions 可能限制最短为5分钟，调试时若失败可改成 '*/5 * * * *'
+# 触发条件：每5分钟运行一次，或手动触发
 on:
   schedule:
-    - cron: '*/5 * * * *'  # 每2分钟触发
-  workflow_dispatch:        # 👈 手动触发按钮，推荐加上， 测试方便
-
+    - cron: '*/5 * * * *'  # 每5分钟触发
+  workflow_dispatch:      # 支持手动触发，方便测试
 
 # 定义任务
 jobs:
@@ -25,14 +23,13 @@ jobs:
       - name: 配置 Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'  # Python 版本，建议用 3.9，可根据需要调整
+          python-version: '3.9'  # 使用 Python 3.9
 
       # 步骤3：安装依赖（如果有 requirements.txt）
-      # 仅当文件存在时安装，避免重复安装
       - name: 安装依赖
         run: |
           if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
+            pip3 install -r requirements.txt
           fi
 
       # 步骤4：打印当前时间，方便调试
@@ -42,3 +39,14 @@ jobs:
       # 步骤5：运行爬虫脚本
       - name: 运行爬虫
         run: python3 news_spider/peng_pai_02.py
+
+      # 步骤6：提交生成的 CSV 文件到仓库
+      - name: 提交 CSV 文件
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add csv_data/peng_pai_news_*.csv
+          git commit -m "添加新爬虫数据: peng_pai_news_$(date +%Y%m%d_%H%M%S).csv" || echo "没有新文件提交"
+          git push
+        # 仅当爬虫运行成功时执行
+        if: success()
