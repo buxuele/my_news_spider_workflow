@@ -1,6 +1,6 @@
 
 ### 此项目的远程地址是：
-https://github.com/buxuele/my-github-workflows
+https://github.com/buxuele/my_news_spider_workflow
 
 
 ### 目的
