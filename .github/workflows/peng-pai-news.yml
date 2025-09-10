@@ -9,8 +9,8 @@ name: 爬虫自动化
 
 on:
   schedule:
-    - cron: '0 */2 * * *'  #  每2个小时触发一次
-  workflow_dispatch:      # 支持手动触发，方便测试
+    - cron: '0 */4 * * *'  # 每4个小时触发一次
+  workflow_dispatch:       # 支持手动触发，方便测试
 
 # 新增！允许推送代码更改
 permissions:
