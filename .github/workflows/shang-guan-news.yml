@@ -1,0 +1,84 @@
+# 工作流名称，在 GitHub Actions 界面显示
+name: 上观新闻爬虫自动化
+
+# 触发条件：每10分钟运行一次，或手动触发
+# Cron 表达式说明：
+# - cron: '*/10 * * * *'  # 每10分钟触发一次
+# - cron: '0 */1 * * *'   # 每1小时触发一次
+# - cron: '0 */2 * * *'   # 每2小时触发一次
+
+on:
+  schedule:
+    - cron: "*/10 * * * *" # 每10分钟触发一次
+  workflow_dispatch: # 支持手动触发，方便测试
+
+# 允许推送代码更改
+permissions:
+  contents: write # 允许推送代码更改
+
+# 定义任务
+jobs:
+  run-shangguan-crawler:
+    # 使用最新的 Ubuntu 环境
+    runs-on: ubuntu-latest
+
+    # 执行步骤
+    steps:
+      # 步骤1：拉取仓库代码
+      - name: 拉取代码
+        uses: actions/checkout@v4
+
+      # 步骤2：设置 Python 环境
+      - name: 配置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9" # 使用 Python 3.9
+
+      # 步骤3：安装依赖
+      - name: 安装依赖
+        run: |
+          if [ -f requirements.txt ]; then
+            pip3 install -r requirements.txt
+          fi
+
+      # 步骤4：打印当前时间，方便调试
+      - name: 打印运行时间
+        run: |
+          echo "开始运行上观新闻爬虫"
+          echo "当前时间: $(date)"
+          echo "时区: $(date +%Z)"
+
+      # 步骤5：运行上观新闻爬虫脚本
+      - name: 运行上观新闻爬虫
+        run: python3 shangGuan_news_spider/shangguan_news_02.py
+
+      # 步骤6：提交生成的 CSV 文件到仓库
+      - name: 提交 CSV 文件
+        if: success()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          # 添加上观新闻数据文件
+          git add csv_data/shang_guan_news_*.csv
+
+          # 检查是否有文件变更
+          if git diff --staged --quiet; then
+            echo "没有新的数据文件需要提交"
+          else
+            # 提交变更
+            git commit -m "🤖 自动更新上观新闻数据 - $(date +'%Y-%m-%d %H:%M:%S')"
+            git push
+            echo "✅ 成功提交上观新闻数据"
+          fi
+
+      # 步骤7：输出运行结果
+      - name: 运行完成
+        if: always()
+        run: |
+          echo "=========================================="
+          echo "上观新闻爬虫任务执行完成"
+          echo "结束时间: $(date)"
+          echo "=========================================="

@@ -4,6 +4,16 @@
 2026年1月10日19:54:12
 
 
+### git 操作重点的地方
+
+git pull --rebase  # 获取远程更新并保持线性历史
+git push           # 推送你的修改
+
+
+### workflow 几种时间
+- cron: '0 */5 * * *'  #  每5个小时触发一次
+- cron: '0 4 * * *'    #  每天中午12点触发一次
+
 
 ### 此项目的远程地址是：
 https://github.com/buxuele/my_news_spider_workflow
