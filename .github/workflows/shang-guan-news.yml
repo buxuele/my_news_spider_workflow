@@ -62,7 +62,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
           # 添加上观新闻数据文件
-          git add csv_data/shang_guan_news_*.csv
+          git add shangguan_csv_data/shang_guan_news_*.csv
 
           # 检查是否有文件变更
           if git diff --staged --quiet; then

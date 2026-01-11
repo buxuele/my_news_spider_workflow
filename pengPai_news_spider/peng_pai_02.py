@@ -20,12 +20,12 @@ def get_thepaper_data(max_pages=100, channel_id='-8'):
         max_pages: 最大爬取页数
         channel_id: 新闻频道 ID
     """
-    # 创建 csv_data 目录
-    os.makedirs('csv_data', exist_ok=True)
+    # 创建 pengpai_csv_data 目录
+    os.makedirs('pengpai_csv_data', exist_ok=True)
 
     # 生成文件名，格式如 peng_pai_news_20250611_213300.csv
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    file_name = f'csv_data/peng_pai_news_{timestamp}.csv'
+    file_name = f'pengpai_csv_data/peng_pai_news_{timestamp}.csv'
 
     # 打开 CSV 文件，追加模式
     with open(file_name, 'a', newline='', encoding='utf-8') as file:

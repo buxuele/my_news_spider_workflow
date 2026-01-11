@@ -21,11 +21,11 @@ headers = {
 
 def get_jfdaily_data(max_pages=5):
     # 2. 创建文件夹和文件
-    base_dir = 'shangguan_news'
+    base_dir = 'shangguan_csv_data'
     os.makedirs(base_dir, exist_ok=True)
 
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    file_name = f'{base_dir}/shangguan_news_{timestamp}.csv'
+    file_name = f'{base_dir}/shang_guan_news_{timestamp}.csv'
 
     print(f"开始爬取，数据将保存至: {file_name}")
 
