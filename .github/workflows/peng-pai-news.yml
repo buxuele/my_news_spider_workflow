@@ -9,12 +9,12 @@ name: 爬虫自动化
 
 on:
   schedule:
-    - cron: '0 */4 * * *'  # 每4个小时触发一次
-  workflow_dispatch:       # 支持手动触发，方便测试
+    - cron: "0 */4 * * *" # 每4个小时触发一次
+  workflow_dispatch: # 支持手动触发，方便测试
 
 # 新增！允许推送代码更改
 permissions:
-  contents: write          # 允许推送代码更改
+  contents: write # 允许推送代码更改
 
 # 定义任务
 jobs:
@@ -32,7 +32,7 @@ jobs:
       - name: 配置 Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'  # 使用 Python 3.9
+          python-version: "3.9" # 使用 Python 3.9
 
       # 步骤3：安装依赖（如果有 requirements.txt）
       - name: 安装依赖
@@ -47,7 +47,7 @@ jobs:
 
       # 步骤5：运行爬虫脚本
       - name: 运行爬虫
-        run: python3 news_spider/peng_pai_02.py
+        run: python3 pengPai_news_spider/peng_pai_02.py
 
       # 步骤6：提交生成的 CSV 文件到仓库
       - name: 提交 CSV 文件
